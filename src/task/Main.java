@@ -3,7 +3,6 @@ package task;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -58,14 +57,12 @@ public class Main {
 						path = path + tmpath[n] + "\\";
 					}
 					System.out.println(path);
-					CreateDir cd = new CreateDir(path);
+					CreateDir cd = new CreateDir(path,myWorkbook);
 					// String todayDir = nm.createDir();
-					ArrayList<String> namelist = cd.readNameListFromExcel(myWorkbook);
 					// nm.createDirByDateAndName(todayDir, namelist);
 					// nm.createWeekTaskDir(mainDir+sparator+"周任务", namelist);
-					cd.mkWeekDir();
 					// nm.tryToCopyOldWeek();
-					cd.mkStuDir(namelist);
+					cd.mkStuDir();
 					// nm.mkdirs(NormalManagement.mainDir + sparator + "周任务", namelist);
 				}
 			}

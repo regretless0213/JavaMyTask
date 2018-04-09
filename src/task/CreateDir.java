@@ -16,10 +16,12 @@ public class CreateDir {
 	private String mainDir;
 	private String toParent;
 	private static String sparator = "\\";
+	private Workbook wb = null;
 
-	public CreateDir(String path) {
+	public CreateDir(String path,Workbook workbook) {
 		mainDir = path;
 		toParent = mainDir + "\\春季-计算机班-张金生-";
+		wb = workbook;
 	}
 
 	public String createDir() {
@@ -170,9 +172,12 @@ public class CreateDir {
 		mkdir(path, "");
 	}
 	
-	public void mkStuDir(ArrayList<String> namelist) {
+	public void mkStuDir() {
+		ArrayList<String> namelist = readNameListFromExcel(wb);
+		mkWeekDir();
 		mkdir(toParent, "");
 		mkdirs(toParent, namelist);
+		
 	}
 
 }
