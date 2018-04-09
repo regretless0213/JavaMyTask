@@ -3,6 +3,7 @@ package task;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -12,25 +13,31 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
+		/*
+		 * C:\Users\Regretless\OneDrive\共享文档\考虫\每日统计\春季-计算机班-张金生-0402-0408
+		 * C:\Users\Regretless\OneDrive\共享文档\考虫\每日统计\考虫VIP计算机班打卡和作业提交情况情况0402-0408.xlsx
+		 */
 		int initial = 2;// Excel表格中初始列
-		int interval = 5;// 选定日期间隔
-		int standard = 3;//未达标的标准
-		
-		for (int i = 0; i < args.length; i++) {// 传入的文件夹路径
-			File filePath = new File(args[i]);
-			if (filePath.isDirectory()) {
+		int interval = 7;// 选定日期间隔
+		int standard = 7;// 未达标的标准
+		boolean[] index = { false, false };// 0.是否统计周总结和周计划；1.是否统计学生作业提交情况
+		boolean CreateOrNot = true;
+
+		for (int i = 0; i < args.length; i++) {
+			File filePath = new File(args[i]);// 传入的路径
+			if (filePath.isDirectory() && index[0]) {// 如果是文件夹，统计周总结或周计划
 				DirFilter df = new DirFilter();
 				df.TotalCount(filePath);
-			} else {
+			} else {// 如果是文件，统计作业提交情况
 				if (initial + interval > 9) {
 					System.out.println("initial或interval初始值错误！");
 					return;
 				}
-				ExcelProcess ep = new ExcelProcess(initial,interval,standard);	
+				ExcelProcess ep = new ExcelProcess(initial, interval, standard);
 				Workbook myWorkbook = null;
 				InputStream is = new FileInputStream(args[i]);
 				@SuppressWarnings("resource")
-				String excelType = args[i].split("\\.")[1];
+				String excelType = args[i].split("\\.")[1];// 区分文件类型
 				if (excelType.equals("xlsx")) {
 					myWorkbook = new XSSFWorkbook(is);
 				} else if (excelType.equals("xls")) {
@@ -38,8 +45,29 @@ public class Main {
 				} else {
 					System.out.println("输入文件格式错误！");
 				}
-				ep.TotalCount(myWorkbook);
-				ep.print();
+				if (index[1]) {
+					ep.TotalCount(myWorkbook);
+					ep.print();
+				}
+				if (CreateOrNot) {
+					String fp = args[i];
+					String[] tmpath = fp.split("\\\\");
+					int tmpsize = tmpath.length - 1;// 未完成
+					String path = "";
+					for (int n = 0; n < tmpsize; n++) {
+						path = path + tmpath[n] + "\\";
+					}
+					System.out.println(path);
+					CreateDir cd = new CreateDir(path);
+					// String todayDir = nm.createDir();
+					ArrayList<String> namelist = cd.readNameListFromExcel(myWorkbook);
+					// nm.createDirByDateAndName(todayDir, namelist);
+					// nm.createWeekTaskDir(mainDir+sparator+"周任务", namelist);
+					cd.mkWeekDir();
+					// nm.tryToCopyOldWeek();
+					cd.mkStuDir(namelist);
+					// nm.mkdirs(NormalManagement.mainDir + sparator + "周任务", namelist);
+				}
 			}
 		}
 
