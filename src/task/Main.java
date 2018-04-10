@@ -24,9 +24,11 @@ public class Main {
 
 		for (int i = 0; i < args.length; i++) {
 			File filePath = new File(args[i]);// 传入的路径
-			if (filePath.isDirectory() && index[0]) {// 如果是文件夹，统计周总结或周计划
+			if (filePath.isDirectory()) {// 如果是文件夹，统计周总结或周计划
 				DirFilter df = new DirFilter();
-				df.TotalCount(filePath);
+				if (index[0]) {
+					df.TotalCount(filePath);
+				}
 			} else {// 如果是文件，统计作业提交情况
 				if (initial + interval > 9) {
 					System.out.println("initial或interval初始值错误！");
@@ -35,7 +37,6 @@ public class Main {
 				ExcelProcess ep = new ExcelProcess(initial, interval, standard);
 				Workbook myWorkbook = null;
 				InputStream is = new FileInputStream(args[i]);
-				@SuppressWarnings("resource")
 				String excelType = args[i].split("\\.")[1];// 区分文件类型
 				if (excelType.equals("xlsx")) {
 					myWorkbook = new XSSFWorkbook(is);
@@ -57,7 +58,7 @@ public class Main {
 						path = path + tmpath[n] + "\\";
 					}
 					System.out.println(path);
-					CreateDir cd = new CreateDir(path,myWorkbook);
+					CreateDir cd = new CreateDir(path, myWorkbook);
 					// String todayDir = nm.createDir();
 					// nm.createDirByDateAndName(todayDir, namelist);
 					// nm.createWeekTaskDir(mainDir+sparator+"周任务", namelist);

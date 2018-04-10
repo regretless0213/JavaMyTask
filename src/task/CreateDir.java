@@ -28,7 +28,7 @@ public class CreateDir {
 		Date date = new Date();
 		DateFormat format = new SimpleDateFormat("MM-dd");
 		String dateMD = format.format(date);
-		System.out.println(dateMD);
+//		System.out.println(dateMD);
 		String location = mainDir + sparator + dateMD;
 		File f = new File(location);
 		if (!f.exists())
