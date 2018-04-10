@@ -12,15 +12,12 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
-		/*
-		 * C:\Users\Regretless\OneDrive\共享文档\考虫\每日统计\春季-计算机班-张金生-0402-0408
-		 * C:\Users\Regretless\OneDrive\共享文档\考虫\每日统计\考虫VIP计算机班打卡和作业提交情况情况0402-0408.xlsx
-		 */
+
 		int initial = 2;// Excel表格中初始列
 		int interval = 7;// 选定日期间隔
 		int standard = 7;// 未达标的标准
-		boolean[] index = { false, false };// 0.是否统计周总结和周计划；1.是否统计学生作业提交情况
-		boolean CreateOrNot = true;
+		boolean[] index = { false, false };// true , true 0.是否统计周总结和周计划；1.是否统计学生作业提交情况
+		boolean CreateOrNot = true;// false
 
 		for (int i = 0; i < args.length; i++) {
 			File filePath = new File(args[i]);// 传入的路径
