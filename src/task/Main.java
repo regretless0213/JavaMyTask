@@ -9,18 +9,27 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Main {
+	/*
+	 * C:\Users\Regretless\OneDrive\共享文档\考虫\每日统计\春季-计算机班-张金生-0409-0415
+	 * C:\Users\Regretless\OneDrive\共享文档\考虫\每日统计\考虫VIP计算机班打卡和作业提交情况情况0409-0415.xlsx
+	 */
 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 
 		int initial = 2;// Excel表格中初始列
-		int interval = 7;// 选定日期间隔
-		int standard = 7;// 未达标的标准
-		boolean[] index = { false, false };// true , true 0.是否统计周总结和周计划；1.是否统计学生作业提交情况
-		boolean CreateOrNot = true;// false
+		int interval = 5;// 选定日期间隔
+		int standard = 5;// 未达标的标准
+		boolean[] index = { true, true };// false ,false 0.是否统计周总结和周计划；1.是否统计学生作业提交情况
+		boolean CreateOrNot = false;// true
 
 		for (int i = 0; i < args.length; i++) {
 			File filePath = new File(args[i]);// 传入的路径
+			if(!filePath.exists()) {
+				System.out.println("周文件夹尚未创建！");
+				CreateOrNot = true;
+				continue;
+			}
 			if (filePath.isDirectory()) {// 如果是文件夹，统计周总结或周计划
 				DirFilter df = new DirFilter();
 				if (index[0]) {

@@ -44,6 +44,10 @@ public class CreateDir {
 			String tmpName = rowNum + eRow.getCell(1).toString();
 			// System.out.println(tmpName);
 			nameList.add(tmpName);
+			if (eRow.getCell(2) != null && eRow.getCell(2).toString().contentEquals("转班")) {
+				nameList.remove(rowNum - 1);
+				System.out.println(tmpName + "zhuanban");
+			}
 		}
 
 		return nameList;
@@ -79,9 +83,9 @@ public class CreateDir {
 			f.mkdir();
 			System.out.println(child + "创建成功");
 		}
-//		else {
-//			System.out.println(path);
-//		}
+		// else {
+		// System.out.println(path);
+		// }
 	}
 
 	private void mkdirs(String parent, ArrayList<String> children) {

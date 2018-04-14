@@ -21,7 +21,8 @@ public class ExcelProcess {
 	private ArrayList<String> zhResult;// 用来收录综合未达标学生
 
 	private ArrayList<Integer> Result;// 记录每天有多少学生签到及提交作业
-	private ArrayList<int[]> stuChange;
+	private ArrayList<int[]> stuChange;// 记录人员变动
+	private int leave;
 
 	static Comparator<String> sc = new Comparator<String>() {
 		@Override
@@ -47,6 +48,7 @@ public class ExcelProcess {
 		initial = initialNum;
 		interval = intervalNum;
 		standard = standardNum;
+		leave = 0;
 
 		// 初始化
 		stuName = new HashMap<String, Integer>();
@@ -82,13 +84,17 @@ public class ExcelProcess {
 						num++;
 					} else {
 						num = 0;
-						if (!eRow.getCell(cellsNum).toString().contentEquals("加入班级")) {
-							Result.set(rindex, Result.get(rindex) + 1);
-						} else {
+						if (eRow.getCell(cellsNum).toString().contentEquals("转班")) {
+							stuName.remove(name);
+							leave++;
+							break;
+						} else if (eRow.getCell(cellsNum).toString().contentEquals("加入班级")) {
 							int[] change = new int[2];
 							change[0] = rowNum;
 							change[1] = minsize;
 							stuChange.add(change);
+						} else {
+							Result.set(rindex, Result.get(rindex) + 1);
 						}
 					}
 				}
@@ -114,6 +120,9 @@ public class ExcelProcess {
 					// stuName.add(xssfRow.getCell(1).toString());
 
 					String name = rowNum + zRow.getCell(1).toString();
+					if (!stuName.containsKey(name)) {
+						break;
+					}
 					int tmp = stuName.get(name);
 					if (zRow != null) {
 						if (zRow.getCell(column) == null) {
@@ -174,7 +183,7 @@ public class ExcelProcess {
 		}
 		System.out.println("本周人员变动情况：");
 		for (int[] r : stuChange) {
-			System.out.println("第" + r[1] + "天学生总数为" + r[0]);
+			System.out.println("第" + r[1] + "天学生总数为" + (r[0] - leave));
 		}
 		System.out.println("目前学生总数量为" + stuName.size());
 	}
