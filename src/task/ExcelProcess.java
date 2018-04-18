@@ -172,18 +172,19 @@ public class ExcelProcess {
 		for (String r : zhResult) {
 			System.out.println(r);
 		}
-		System.out.println("共有" + zhResult.size() + "同学未提交作业");
+		System.out.println("共有" + zhResult.size() + "同学未提交作业\n");
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		System.out.println("本周英语打卡率如下：");
 		for (int d = 0; d < (Result.size() / 2); d++) {
-			System.out.println("第" + (d + 1) + "天" + Result.get(d));
+			System.out.println("周" + (d + 1) + "，共 人，打卡人数" + Result.get(d));
 		}
 		System.out.println("本周综合打卡率如下：");
 		for (int d = (Result.size() / 2); d < Result.size(); d++) {
-			System.out.println("第" + (d - (Result.size() / 2) + 1) + "天" + Result.get(d));
+			System.out.println("周" + (d - (Result.size() / 2) + 1) + "，共 人，打卡人数" + Result.get(d));
 		}
 		System.out.println("本周人员变动情况：");
 		for (int[] r : stuChange) {
-			System.out.println("第" + r[1] + "天学生总数为" + (r[0] - leave));
+			System.out.println("周" + r[1] + "学生总数为" + (r[0] - leave));
 		}
 		System.out.println("目前学生总数量为" + stuName.size());
 	}

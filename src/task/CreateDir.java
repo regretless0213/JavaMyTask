@@ -43,10 +43,10 @@ public class CreateDir {
 			Row eRow = eSheet.getRow(rowNum);
 			String tmpName = rowNum + eRow.getCell(1).toString();
 			// System.out.println(tmpName);
-			nameList.add(tmpName);
-			if (eRow.getCell(2) != null && eRow.getCell(2).toString().contentEquals("转班")) {
-				nameList.remove(rowNum - 1);
-				System.out.println(tmpName + "zhuanban");
+			if (eRow.getCell(2) == null || !eRow.getCell(2).toString().contentEquals("转班")) {
+				nameList.add(tmpName);
+			} else {
+				System.out.println(tmpName + "已转班");
 			}
 		}
 
