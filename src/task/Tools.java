@@ -11,18 +11,14 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-public class CreateDir {
+public class Tools {
 
 	private String mainDir;
 	private String toParent;
 	private static String sparator = "\\";
 	private Workbook wb = null;
 
-	public CreateDir(String path, Workbook workbook) {
-		mainDir = path;
-		toParent = mainDir + "\\春季-计算机班-张金生-";
-		wb = workbook;
-	}
+
 
 	// private String createDir() {
 	// Date date = new Date();
@@ -36,7 +32,7 @@ public class CreateDir {
 	// return f.getAbsolutePath();
 	// }
 
-	private ArrayList<String> readNameListFromExcel(Workbook workbook) {
+	public ArrayList<String> readNameListFromExcel(Workbook workbook) {
 		ArrayList<String> nameList = new ArrayList<>();
 		Sheet eSheet = workbook.getSheetAt(0);
 		for (int rowNum = 1; rowNum <= eSheet.getLastRowNum(); rowNum++) {
@@ -184,7 +180,11 @@ public class CreateDir {
 		mkdir(path, "");
 	}
 
-	public void mkStuDir() {
+	public void mkStuDir(String path, Workbook workbook) {
+		mainDir = path;
+		toParent = mainDir + "\\春季-计算机班-张金生-";
+		wb = workbook;
+		
 		ArrayList<String> namelist = readNameListFromExcel(wb);
 		mkWeekDir();
 		toParent += getDateofPath();
