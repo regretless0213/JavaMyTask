@@ -184,6 +184,9 @@ public class ExcelProcess {
 		}
 		System.out.println("本周人员变动情况：");
 		for (int[] r : stuChange) {
+			if (r[1] > 1) {
+				System.out.println("周" + (r[1] - 1) + "之前学生总数为" + (r[0] - leave - 1));
+			}
 			System.out.println("周" + r[1] + "学生总数为" + (r[0] - leave));
 		}
 		System.out.println("目前学生总数量为" + stuName.size());
