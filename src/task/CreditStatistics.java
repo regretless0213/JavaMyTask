@@ -14,7 +14,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class CreditStatistics {
 	private ArrayList<String> stuName;// 学生列表
-	private Map<String, String> stuMap;//用户名与学生姓名
+	private Map<String, String> stuMap;// 用户名与学生姓名
 	private ArrayList<String[]> credit;// 学分列表
 	private String[] low;
 
@@ -26,13 +26,13 @@ public class CreditStatistics {
 
 		Tools t = new Tools();
 		stuName = t.readNameListFromExcel(workbook);// 获取学生列表
-//		System.out.println(stuName.size());
+		// System.out.println(stuName.size());
 	}
-	
+
 	public int IndexContain(String s) {
 		int index = 0;
-		for(;index<stuName.size();index++) {
-			if(stuName.get(index).contains(s)) {
+		for (; index < stuName.size(); index++) {
+			if (stuName.get(index).contains(s)) {
 				return index;
 			}
 		}
@@ -47,21 +47,20 @@ public class CreditStatistics {
 				String un = eRow.getCell(0).toString();
 				String sn = eRow.getCell(2).toString();
 				int id = IndexContain(sn);
-				if(id > -1) {
+				if (id > -1) {
 					stuMap.put(un, stuName.get(id));
 				}
 			}
 		}
-//		System.out.println(stuMap.size());
-		
-		
+		// System.out.println(stuMap.size());
+
 		Sheet cSheet = workbook.getSheetAt(1);// 统计学分
 		for (int rowNum = 0; rowNum <= cSheet.getLastRowNum(); rowNum++) {
 			Row eRow = cSheet.getRow(rowNum);
 			if (eRow != null) {
 				String untmp = eRow.getCell(1).toString();
 				if (stuMap.containsKey(untmp)) {
-//					System.out.println(untmp);
+					// System.out.println(untmp);
 					String[] ctmp = new String[2];
 					ctmp[0] = untmp;
 					ctmp[1] = eRow.getCell(3).toString();
@@ -109,6 +108,10 @@ public class CreditStatistics {
 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
+		/*
+		 * C:\Users\Regretless\OneDrive\共享文档\考虫\每日统计\考虫VIP计算机班打卡和作业提交情况情况0416-0422.xlsx
+		 * D:\Download\学生证及学分.xls
+		 */
 		Workbook myWorkbook = getWorkbook(args[0]);
 		CreditStatistics cs = new CreditStatistics(myWorkbook);
 		myWorkbook = getWorkbook(args[1]);

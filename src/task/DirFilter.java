@@ -40,7 +40,7 @@ public class DirFilter {
 		}
 	};
 
-	public static String process(String path) {
+	public static String process(String path) {//从文件路径中提取学生姓名
 		String reg = ".*\\\\(.*)";
 		String s = path.replaceAll(reg, "$1");
 		return s;

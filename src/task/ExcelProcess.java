@@ -73,7 +73,7 @@ public class ExcelProcess {
 				for (int cellsNum = initial; cellsNum < (initial + interval); cellsNum++) {
 					// System.out.println(xssfRow.getCell(cellsNum));
 					int rindex = cellsNum - initial;// 索引位置
-					int minsize = rindex + 1;//
+					int minsize = rindex + 1;//记录星期几
 					if (Result.size() < minsize) {
 						Result.add(0);
 					}

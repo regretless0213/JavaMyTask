@@ -1,4 +1,4 @@
-package task;
+package task.test;
 
 import java.io.File;
 import java.io.FileInputStream;
