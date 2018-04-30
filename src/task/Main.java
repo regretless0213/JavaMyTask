@@ -21,7 +21,7 @@ public class Main {
 		int interval = 7;// 选定日期间隔
 		int standard = 7;// 未达标的标准
 		boolean[] index = { true, true };// false ,false 0.是否统计周总结和周计划；1.是否统计学生作业提交情况
-		boolean CreateOrNot = true;// false
+		boolean CreateOrNot = false;// true
 
 		for (int i = 0; i < args.length; i++) {
 			File filePath = new File(args[i]);// 传入的路径

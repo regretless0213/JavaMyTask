@@ -1,15 +1,19 @@
 package task;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Tools {
 
@@ -88,6 +92,21 @@ public class Tools {
 		for (String child : children) {
 			mkdir(parent, child);
 		}
+	}
+	
+	public Workbook getWorkbook(String path) throws Exception {// 判断Excel表格类型
+		Workbook wbtmp = null;
+		InputStream is = new FileInputStream(path);
+		String excelType = path.split("\\.")[1];// 区分文件类型
+		if (excelType.equals("xlsx")) {
+			wbtmp = new XSSFWorkbook(is);
+		} else if (excelType.equals("xls")) {
+			wbtmp = new HSSFWorkbook(is);
+		} else {
+			System.out.println("输入文件格式错误！");
+		}
+		return wbtmp;
+
 	}
 
 	// private void removeAllFromTo(String fromParent, String toParent, String
