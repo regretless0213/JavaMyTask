@@ -151,8 +151,8 @@ public class ExStuStatistics {
 				if (arg1.getValue()[1] == 0) {
 					System.out.println(arg1.getKey());
 				}
-				int o1 = arg0.getValue()[0] * time / arg0.getValue()[1];
-				int o2 = arg1.getValue()[0] * time / arg1.getValue()[1];
+				float o1 = getFraction(arg0);
+				float o2 = getFraction(arg1);
 				if (o1 > o2) {
 					return -1;
 				} else if (o1 == o2) {
@@ -176,10 +176,10 @@ public class ExStuStatistics {
 
 		});
 
-		float max = list.get(0).getValue()[0] * time / list.get(0).getValue()[1];
-		System.out.println(max);
+		float max = getFraction(list.get(0));
+//		System.out.println(max);
 		for (Map.Entry<String, int[]> me : list) {
-			float ctmp = me.getValue()[0] * time / me.getValue()[1];
+			float ctmp = getFraction(me);
 			System.out.println(me.getValue()[0] + "  " + me.getValue()[1]);
 			int credit = (int) (Math.sqrt(ctmp) / Math.sqrt(max) * 100);
 			System.out.println(me.getKey() + " 评分：" + credit);
@@ -218,8 +218,15 @@ public class ExStuStatistics {
 		}
 	}
 
+	private float getFraction(Map.Entry<String, int[]> e) {
+		return e.getValue()[0] * time / e.getValue()[1];
+		
+	}
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
+		/*
+		 * C:\Users\Regretless\Desktop\作业\月度统计
+		 */
 		for (int i = 0; i < args.length; i++) {
 			File filePath = new File(args[i]);
 			if (filePath.isDirectory()) {

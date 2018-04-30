@@ -107,7 +107,7 @@ public class CreditStatistics {
 		// TODO Auto-generated method stub
 		/*
 		 * C:\Users\Regretless\OneDrive\共享文档\考虫\每日统计\考虫VIP计算机班打卡和作业提交情况情况0416-0422.xlsx
-		 * D:\Download\学生证及学分.xls
+		 * C:\Users\Regretless\Desktop\作业\学生证及学分.xls
 		 */
 		Tools t = new Tools();
 		Workbook myWorkbook = t.getWorkbook(args[0]);
