@@ -1,12 +1,8 @@
 package task;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Main {
 	/*
@@ -41,16 +37,8 @@ public class Main {
 					return;
 				}
 				ExcelProcess ep = new ExcelProcess(initial, interval, standard);
-				Workbook myWorkbook = null;
-				InputStream is = new FileInputStream(args[i]);
-				String excelType = args[i].split("\\.")[1];// 区分文件类型
-				if (excelType.equals("xlsx")) {
-					myWorkbook = new XSSFWorkbook(is);
-				} else if (excelType.equals("xls")) {
-					myWorkbook = new HSSFWorkbook(is);
-				} else {
-					System.out.println("输入文件格式错误！");
-				}
+				Tools wb = new Tools();
+				Workbook myWorkbook = wb.getWorkbook(args[i]);
 				if (index[1]) {
 					ep.TotalCount(myWorkbook);
 					ep.print();
