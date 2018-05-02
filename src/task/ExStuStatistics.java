@@ -76,37 +76,39 @@ public class ExStuStatistics {
 								cdtmp[1]--;
 							} else if (eRow.getCell(cellsNum).toString().contains("加入班级")) {
 								continue;
-							} else if (eRow.getCell(cellsNum).toString().contains("请假")) {
-								cdtmp[1]--;
-							} else if (eRow.getCell(cellsNum).toString().contains("打卡")) {
+							} else if (eRow.getCell(cellsNum).toString().contains("请假")) {//假条提交算2分？？
+								cdtmp[0] += 6;
+							} else if (eRow.getCell(cellsNum).toString().contains("打卡")) {//几分？？？？
 								cdtmp[0] += 1;
 								dtmp[0]++;
 							} else if (eRow.getCell(cellsNum).toString().contains("笔记")) {
-								cdtmp[0] += 5;
+								cdtmp[0] += 8;
 								dtmp[1]++;
 							} else if (eRow.getCell(cellsNum).toString().contains("直播")) {
-								cdtmp[0] += 2;
+								cdtmp[0] += 6;
 								dtmp[2]++;
-							} else if (eRow.getCell(cellsNum).toString().contains("APP签到")) {
+							} else if (eRow.getCell(cellsNum).toString().contains("APP签到")) {//取消？？？
 								cdtmp[0] += 6;
 								dtmp[3]++;
 							} else if (eRow.getCell(cellsNum).toString().contains("单词")) {
-								cdtmp[0] += 3;
+								cdtmp[0] += 5;
 								dtmp[4]++;
 							} else if (eRow.getCell(cellsNum).toString().contains("小组")) {
-								cdtmp[0] += 7;
+								cdtmp[0] += 20;
 								dtmp[5]++;
 							} else { //
 								float ctmp = Float.parseFloat(eRow.getCell(cellsNum).toString());
 								if (in == 0) {
-									if (ctmp >= 30) {
-										cdtmp[0] += 5;
-									} else {
-										cdtmp[0] += ctmp / 6;
+									if (ctmp > 60) {
+										ctmp = 60;
 									}
+									cdtmp[0] += ctmp;
 									dtmp[6] += ctmp;
 								} else {
-									cdtmp[0] += ctmp / 4;
+									if (ctmp > 20) {
+										ctmp = 20;
+									}
+									cdtmp[0] += ctmp;
 									dtmp[7] += ctmp;
 								}
 
@@ -118,8 +120,17 @@ public class ExStuStatistics {
 				}
 				if (stuCredit.containsKey(name)) {
 					int[] cd = new int[2];
-					cd[0] = stuCredit.get(name)[0] + cdtmp[0];
-					if (in == 0) {
+					switch(in) {			//映射公式
+					case 0:cd[0] = stuCredit.get(name)[0] + cdtmp[0] / 6;break;		//单词打卡映射
+					case 1:cd[0] = stuCredit.get(name)[0] + cdtmp[0];break;			//起床打卡
+					case 2:cd[0] = stuCredit.get(name)[0] + cdtmp[0]*2 / 5;break;	//数学作业
+					case 3:cd[0] = stuCredit.get(name)[0] + cdtmp[0]*3 / 10;break;		//英语
+					case 4:cd[0] = stuCredit.get(name)[0] + cdtmp[0]*3 / 10;break;		//专业课
+					case 5:cd[0] = stuCredit.get(name)[0] + cdtmp[0] / 4;break;		//政治
+					default: System.out.println("评分映射系统出错！");
+					}
+					
+					if (in == 0) {//出勤天数
 						cd[1] = stuCredit.get(name)[1] + cdtmp[1];
 					} else {
 						cd[1] = stuCredit.get(name)[1];
@@ -177,12 +188,12 @@ public class ExStuStatistics {
 		});
 
 		float max = getFraction(list.get(0));
-//		System.out.println(max);
+		// System.out.println(max);
 		for (Map.Entry<String, int[]> me : list) {
 			float ctmp = getFraction(me);
-			System.out.println(me.getValue()[0] + "  " + me.getValue()[1]);
+			// System.out.println(me.getValue()[0] + " " + me.getValue()[1]);
 			int credit = (int) (Math.sqrt(ctmp) / Math.sqrt(max) * 100);
-			System.out.println(me.getKey() + " 评分：" + credit);
+			System.out.println((list.indexOf(me) + 1) + ". " + me.getKey() + " 评分：" + credit);
 		}
 	}
 
@@ -220,8 +231,9 @@ public class ExStuStatistics {
 
 	private float getFraction(Map.Entry<String, int[]> e) {
 		return e.getValue()[0] * time / e.getValue()[1];
-		
+
 	}
+
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		/*

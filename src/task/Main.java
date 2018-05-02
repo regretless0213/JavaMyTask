@@ -41,7 +41,16 @@ public class Main {
 				Workbook myWorkbook = wb.getWorkbook(args[i]);
 				if (index[1]) {
 					ep.TotalCount(myWorkbook);
-					ep.print();
+					ep.printBadStuList();
+					System.out.println();
+					
+					ep.printRatio();
+					System.out.println();
+					
+					ep.printDaily();
+					System.out.println();
+					
+					ep.printReqForLeave();
 				}
 				if (CreateOrNot) {
 					String fp = args[i];
