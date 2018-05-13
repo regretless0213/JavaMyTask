@@ -24,6 +24,7 @@ public class ExcelProcess {
 	private ArrayList<int[]> stuChange;// 记录人员变动
 	private int leave;
 
+	private int cmon;// 当前是否统计小组成员：决定不合格学生名单是否将小组成员计算在内
 	private ArrayList<String> groupStu;// 用来收录小组成员
 	private ArrayList<String[]> rlStu;// 用来收录请假学生
 	private ArrayList<String[]> stuDaily;// 用来统计每位学生打卡总次数
@@ -53,6 +54,7 @@ public class ExcelProcess {
 		interval = intervalNum;
 		standard = standardNum;
 		leave = 0;
+		cmon = 1;
 
 		// 初始化
 		stuName = new HashMap<String, Integer>();
@@ -151,11 +153,12 @@ public class ExcelProcess {
 		}
 
 		// 综合作业统计
-		for (int column = initial; column < (initial + interval); column++) {
-			int rindex = column - initial;
-			Result.add(0);
-
-			for (int rowNum = 1; rowNum <= eSheet.getLastRowNum(); rowNum++) {
+		for (int rowNum = 1; rowNum <= eSheet.getLastRowNum(); rowNum++) {
+			for (int column = initial; column < (initial + interval); column++) {
+				int rindex = column - initial;
+				if (rowNum == 1) {
+					Result.add(0);
+				}
 				int daycount = 0;
 
 				for (int numSheet = 2; numSheet < workbook.getNumberOfSheets(); numSheet++) {
@@ -184,11 +187,17 @@ public class ExcelProcess {
 							// if (!zRow.getCell(column).toString().contentEquals("加入班级")) {
 							Result.set(rindex + interval, Result.get(rindex + interval) + 1);
 							// }
+							if (zRow.getCell(column).toString().contains("请假")) {
+								int minsize = rindex + 1;// 记录星期几
+								String[] rl = new String[2];
+								rl[0] = name;
+								rl[1] = "周" + minsize;
+								rlStu.add(rl);
+							}
 							break;
 						}
-						if (numSheet == 2) {// 提取小组成员
-							if (zRow.getCell(9) != null && zRow.getCell(9).toString() != ""
-									&& !zRow.getCell(9).toString().contains("组长")) {
+						if (numSheet == 2 && cmon == 1) {// 提取小组成员 && zRow.getCell(9).toString() != ""
+							if (zRow.getCell(9) != null && zRow.getCell(9).toString().contains("组员")) {
 								if (!groupStu.contains(name)) {
 									groupStu.add(name);
 								}
@@ -238,9 +247,10 @@ public class ExcelProcess {
 		System.out.println("本周人员变动情况：");
 		for (int[] r : stuChange) {
 			if (r[1] > 1) {
-				System.out.println("周" + (r[1] - 1) + "之前学生总数为" + (r[0] - leave - 1));
+				System.out.println("周" + (r[1] - 1) + "及之前学生总数为" + (r[0] - leave - 1));
+			} else {
+				System.out.println("周" + r[1] + "学生总数为" + (r[0] - leave));
 			}
-			System.out.println("周" + r[1] + "学生总数为" + (r[0] - leave));
 		}
 		System.out.println("目前学生总数量为" + stuName.size());
 	}
@@ -263,5 +273,16 @@ public class ExcelProcess {
 				System.out.print(" " + rl[1]);
 			}
 		}
+	}
+
+	public void printGroupMember() {
+		System.out.println("小组成员：");
+		for (String name : groupStu) {
+			System.out.println(name);
+		}
+	}
+
+	public void setCMON(int b) {
+		cmon = b;
 	}
 }

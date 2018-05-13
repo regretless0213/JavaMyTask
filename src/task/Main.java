@@ -40,7 +40,10 @@ public class Main {
 				Tools wb = new Tools();
 				Workbook myWorkbook = wb.getWorkbook(args[i]);
 				if (index[1]) {
+					ep.setCMON(0);
 					ep.TotalCount(myWorkbook);
+					
+					
 					ep.printBadStuList();
 					System.out.println();
 					
@@ -51,6 +54,8 @@ public class Main {
 					System.out.println();
 					
 					ep.printReqForLeave();
+					
+//					ep.printGroupMember();
 				}
 				if (CreateOrNot) {
 					String fp = args[i];
