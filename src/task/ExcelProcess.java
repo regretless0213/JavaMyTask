@@ -276,7 +276,7 @@ public class ExcelProcess {
 	}
 
 	public void printGroupMember() {
-		System.out.println("小组成员：");
+		System.out.println(groupStu.size() + "名小组成员：");
 		for (String name : groupStu) {
 			System.out.println(name);
 		}

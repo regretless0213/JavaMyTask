@@ -22,8 +22,6 @@ public class Tools {
 	private static String sparator = "\\";
 	private Workbook wb = null;
 
-
-
 	// private String createDir() {
 	// Date date = new Date();
 	// DateFormat format = new SimpleDateFormat("MM-dd");
@@ -93,7 +91,7 @@ public class Tools {
 			mkdir(parent, child);
 		}
 	}
-	
+
 	public Workbook getWorkbook(String path) throws Exception {// 判断Excel表格类型
 		Workbook wbtmp = null;
 		InputStream is = new FileInputStream(path);
@@ -145,10 +143,10 @@ public class Tools {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		int dayofweek = cal.get(Calendar.DAY_OF_WEEK);
-		if (dayofweek == 1) {
-			dayofweek += 7;
+		if (dayofweek == 7) {
+			dayofweek -= 7;
 		}
-		cal.add(Calendar.DATE, 2 - dayofweek);
+		cal.add(Calendar.DATE, -dayofweek);
 		return cal.getTime();
 	}
 
@@ -203,7 +201,7 @@ public class Tools {
 		mainDir = path;
 		toParent = mainDir + "\\春季-计算机班-张金生-";
 		wb = workbook;
-		
+
 		ArrayList<String> namelist = readNameListFromExcel(wb);
 		mkWeekDir();
 		toParent += getDateofPath();
