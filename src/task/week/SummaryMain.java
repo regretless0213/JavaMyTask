@@ -14,12 +14,16 @@ public class SummaryMain {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		Tools t = new Tools();
 		int initial = 2;// Excel表格中初始列
 		int interval = 7;// 选定日期间隔
 		int standard = 7;// 未达标的标准
-		boolean[] index = { true, true };// false ,false 0.是否统计周总结和周计划；1.是否统计学生作业提交情况
+		
+		boolean[] index = { true, true, true };
+		// false ,false 0.是否统计周总结和周计划；1.是否统计学生作业提交情况；2.是否打印平均分及最低分
 		boolean CreateOrNot = false;// true
+		
+		String creditpath = "C:\\Users\\Regretless\\Desktop\\作业\\学生证及学分.xls";//评分表格路径
 
 		for (int i = 0; i < args.length; i++) {
 			File filePath = new File(args[i]);// 传入的路径
@@ -39,8 +43,8 @@ public class SummaryMain {
 					return;
 				}
 				ExcelProcess ep = new ExcelProcess(initial, interval, standard);
-				Tools wb = new Tools();
-				Workbook myWorkbook = wb.getWorkbook(args[i]);
+				
+				Workbook myWorkbook = t.getWorkbook(args[i]);
 				if (index[1]) {
 					ep.setCMON(0);//是否统计小组成员：1是0否；影响到不合格名单
 					ep.TotalCount(myWorkbook);
@@ -68,13 +72,20 @@ public class SummaryMain {
 						path = path + tmpath[n] + "\\";
 					}
 					System.out.println(path);
-					Tools cd = new Tools();
 					// String todayDir = nm.createDir();
 					// nm.createDirByDateAndName(todayDir, namelist);
 					// nm.createWeekTaskDir(mainDir+sparator+"周任务", namelist);
 					// nm.tryToCopyOldWeek();
-					cd.mkStuDir(path, myWorkbook);
+					t.mkStuDir(path, myWorkbook);
 					// nm.mkdirs(NormalManagement.mainDir + sparator + "周任务", namelist);
+				}
+				if(index[2]) {
+					CreditStatistics cs = new CreditStatistics(t.readNameListFromExcel(myWorkbook));
+
+					myWorkbook = t.getWorkbook(creditpath);
+					cs.Collection(myWorkbook);
+					System.out.println(cs.Average());
+					cs.printLow();
 				}
 			}
 		}

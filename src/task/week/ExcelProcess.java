@@ -289,6 +289,7 @@ public class ExcelProcess {
 				System.out.print(" " + rl[1]);
 			}
 		}
+		System.out.println();
 	}
 
 	public void printGroupMember() {

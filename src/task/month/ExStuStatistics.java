@@ -35,7 +35,6 @@ public class ExStuStatistics {
 		File[] tmplist = fs.listFiles();
 		for (int n = 0; n < tmplist.length; n++) {// 遍历文件夹中每个学生文档
 			if (!tmplist[n].isDirectory()) {
-				Tools t = new Tools();
 				Workbook mywb = t.getWorkbook(tmplist[n].getAbsolutePath());// 处理文件、迭代分数
 				ExcelCount(mywb);
 			} else {
