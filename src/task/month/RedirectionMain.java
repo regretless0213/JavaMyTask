@@ -1,4 +1,4 @@
-package task;
+package task.month;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,8 +23,8 @@ public class RedirectionMain {
 				}
 				path = path + "ÆÀ·Ö½á¹û.txt";
 				System.out.println(path);
-		        PrintStream ps=new PrintStream(new FileOutputStream(path));  
-		        System.setOut(ps);  
+				PrintStream ps = new PrintStream(new FileOutputStream(path));
+				System.setOut(ps);
 				ExStuStatistics ess = new ExStuStatistics();
 				ess.TotalCount(filePath);
 				ess.print();

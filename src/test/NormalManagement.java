@@ -1,4 +1,4 @@
-package task.test;
+package test;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -139,7 +139,7 @@ public class NormalManagement {
 		return cal.getTime();
 	}
 
-	// 获取本周的结束时间
+	// 获取本周的结束时�?
 	public Date getEndDayOfWeek() {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(getBeginDayOfWeek());
@@ -156,7 +156,7 @@ public class NormalManagement {
 		return (weekEndSta);
 	}
 
-	static String toParent = NormalManagement.mainDir + "\\春季-计算机班-张金生-";
+	static String toParent = NormalManagement.mainDir + "\\春季-计算机班-张金�?-";
 	Date date1;
 	Date date2;
 	DateFormat format;
@@ -176,12 +176,12 @@ public class NormalManagement {
 		// String todayDir = nm.createDir();
 		ArrayList<String> namelist = nm.readNameListFromExcel();
 		// nm.createDirByDateAndName(todayDir, namelist);
-		// nm.createWeekTaskDir(mainDir+sparator+"周任务", namelist);
+		// nm.createWeekTaskDir(mainDir+sparator+"周任�?", namelist);
 		nm.mkWeekDir();
 		//nm.tryToCopyOldWeek();
 		nm.mkdir(toParent, "");
 		nm.mkdirs(toParent, namelist);
-		//nm.mkdirs(NormalManagement.mainDir + sparator + "周任务", namelist);
+		//nm.mkdirs(NormalManagement.mainDir + sparator + "周任�?", namelist);
 		
 	}
 

@@ -34,14 +34,14 @@ public class Tools {
 	// return f.getAbsolutePath();
 	// }
 
-	public ArrayList<String> readNameListFromExcel(Workbook workbook) {
+	public ArrayList<String> readNameListFromExcel(Workbook workbook) {// 获取成员名单
 		ArrayList<String> nameList = new ArrayList<>();
 		Sheet eSheet = workbook.getSheetAt(0);
 		for (int rowNum = 1; rowNum <= eSheet.getLastRowNum(); rowNum++) {
 			Row eRow = eSheet.getRow(rowNum);
 			String tmpName = rowNum + eRow.getCell(1).toString();
 			// System.out.println(tmpName);
-			if (eRow.getCell(2) == null || !eRow.getCell(2).toString().contentEquals("转班")) {
+			if (!LeaveOrNot(tmpName)) {
 				nameList.add(tmpName);
 			} else {
 				System.out.println(tmpName + "已转班");
@@ -74,7 +74,7 @@ public class Tools {
 	// }
 	// }
 
-	private void mkdir(String parent, String child) {
+	private void mkdir(String parent, String child) {// 创建文件夹
 		String path = parent + sparator + child;
 		File f = new File(path);
 		if (!f.exists()) {
@@ -92,16 +92,23 @@ public class Tools {
 		}
 	}
 
-	public Workbook getWorkbook(String path) throws Exception {// 判断Excel表格类型
+	public Workbook getWorkbook(String path) {// 判断Excel表格类型
 		Workbook wbtmp = null;
-		InputStream is = new FileInputStream(path);
-		String excelType = path.split("\\.")[1];// 区分文件类型
-		if (excelType.equals("xlsx")) {
-			wbtmp = new XSSFWorkbook(is);
-		} else if (excelType.equals("xls")) {
-			wbtmp = new HSSFWorkbook(is);
-		} else {
-			System.out.println("输入文件格式错误！");
+		InputStream is;
+		try {
+			is = new FileInputStream(path);
+
+			String excelType = path.split("\\.")[1];// 区分文件类型
+			if (excelType.equals("xlsx")) {
+				wbtmp = new XSSFWorkbook(is);
+			} else if (excelType.equals("xls")) {
+				wbtmp = new HSSFWorkbook(is);
+			} else {
+				System.out.println("输入文件格式错误！");
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return wbtmp;
 
@@ -138,7 +145,7 @@ public class Tools {
 	 */
 	// }
 
-	private Date getBeginDayOfWeek() {
+	private Date getBeginDayOfWeek() {// 获取本周周期初始日的日期
 		Date date = new Date();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
@@ -163,7 +170,7 @@ public class Tools {
 	// }
 
 	// 获取本周的结束时间
-	private Date getEndDayOfWeek() {
+	private Date getEndDayOfWeek() {// 获取本周周期结束日的日期
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(getBeginDayOfWeek());
 		cal.add(Calendar.DAY_OF_WEEK, 6);
@@ -179,7 +186,7 @@ public class Tools {
 	// return (weekEndSta);
 	// }
 
-	public String getDateofPath() {
+	public String getDateofPath() {// 将本周期日期跨度拼接
 		Date date1 = getBeginDayOfWeek();
 		Date date2 = getEndDayOfWeek();
 		DateFormat format = new SimpleDateFormat("MMdd");
@@ -190,14 +197,14 @@ public class Tools {
 
 	}
 
-	private void mkWeekDir() {
+	private void mkWeekDir() {// 创建“我的上交”+“周期”文件夹
 		String dirName = "我的上交" + getDateofPath();
 		// System.out.println(dirName);
 		String path = mainDir + sparator + dirName;
 		mkdir(path, "");
 	}
 
-	public void mkStuDir(String path, Workbook workbook) {
+	public void mkStuDir(String path, Workbook workbook) {// 创建周任务文件夹及每位学生子文件夹
 		mainDir = path;
 		toParent = mainDir + "\\春季-计算机班-张金生-";
 		wb = workbook;
@@ -208,6 +215,31 @@ public class Tools {
 		mkdir(toParent, "");
 		mkdirs(toParent, namelist);
 
+	}
+
+	public ArrayList<String> getStuLeave() {
+		return getStuLeave("C:\\Users\\Regretless\\OneDrive\\共享文档\\考虫\\每日统计\\转班名单.xlsx");
+	}
+
+	public ArrayList<String> getStuLeave(String path) {
+		ArrayList<String> stuLeave = new ArrayList<String>();
+		Workbook mywb = getWorkbook(path);
+		Sheet mysh = mywb.getSheetAt(0);
+		for (int rowNum = 1; rowNum <= mysh.getLastRowNum(); rowNum++) {
+			Row myrow = mysh.getRow(rowNum);
+			String name = myrow.getCell(0).toString().split("\\.")[0] + myrow.getCell(1).toString();
+			stuLeave.add(name);
+		}
+		return stuLeave;
+	}
+
+	public boolean LeaveOrNot(String name) {// 判断学生是否转班
+		ArrayList<String> stuList = getStuLeave();
+		if (stuList.contains(name)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

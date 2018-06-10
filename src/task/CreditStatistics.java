@@ -1,6 +1,5 @@
 package task;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,20 +14,18 @@ public class CreditStatistics {
 	private ArrayList<String[]> credit;// 学分列表
 	private String[] low;
 
-	public CreditStatistics(Workbook workbook) {// 初始化
+	public CreditStatistics(ArrayList<String> al) {// 初始化
 		stuName = new ArrayList<String>();
 		stuMap = new HashMap<String, String>();
 		credit = new ArrayList<String[]>();
 		low = new String[2];
 
-		Tools t = new Tools();
-		stuName = t.readNameListFromExcel(workbook);// 获取学生列表
+		stuName = al;// 获取学生列表
 		// System.out.println(stuName.size());
 	}
 
 	public int IndexContain(String s) {
-		int index = 0;
-		for (; index < stuName.size(); index++) {
+		for (int index = 0; index < stuName.size(); index++) {
 			if (stuName.get(index).contains(s)) {
 				return index;
 			}
@@ -88,22 +85,22 @@ public class CreditStatistics {
 		System.out.println("成绩最低的学生：" + stuMap.get(low[0]) + " 分数为：" + low[1]);
 	}
 
-//	public static Workbook getWorkbook(String path) throws Exception {
-//		Workbook wbtmp = null;
-//		InputStream is = new FileInputStream(path);
-//		String excelType = path.split("\\.")[1];// 区分文件类型
-//		if (excelType.equals("xlsx")) {
-//			wbtmp = new XSSFWorkbook(is);
-//		} else if (excelType.equals("xls")) {
-//			wbtmp = new HSSFWorkbook(is);
-//		} else {
-//			System.out.println("输入文件格式错误！");
-//		}
-//		return wbtmp;
-//
-//	}
+	// public static Workbook getWorkbook(String path) throws Exception {
+	// Workbook wbtmp = null;
+	// InputStream is = new FileInputStream(path);
+	// String excelType = path.split("\\.")[1];// 区分文件类型
+	// if (excelType.equals("xlsx")) {
+	// wbtmp = new XSSFWorkbook(is);
+	// } else if (excelType.equals("xls")) {
+	// wbtmp = new HSSFWorkbook(is);
+	// } else {
+	// System.out.println("输入文件格式错误！");
+	// }
+	// return wbtmp;
+	//
+	// }
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		/*
 		 * C:\Users\Regretless\OneDrive\共享文档\考虫\每日统计\考虫VIP计算机班打卡和作业提交情况情况0416-0422.xlsx
@@ -111,7 +108,8 @@ public class CreditStatistics {
 		 */
 		Tools t = new Tools();
 		Workbook myWorkbook = t.getWorkbook(args[0]);
-		CreditStatistics cs = new CreditStatistics(myWorkbook);
+		CreditStatistics cs = new CreditStatistics(t.readNameListFromExcel(myWorkbook));
+
 		myWorkbook = t.getWorkbook(args[1]);
 		cs.Collection(myWorkbook);
 		System.out.println(cs.Average());

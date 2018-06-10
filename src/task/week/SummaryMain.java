@@ -1,21 +1,23 @@
-package task;
+package task.week;
 
 import java.io.File;
 
 import org.apache.poi.ss.usermodel.Workbook;
 
-public class Main {
+import task.Tools;
+
+public class SummaryMain {
 	/*
 	 * C:\Users\Regretless\OneDrive\共享文档\考虫\每日统计\春季-计算机班-张金生-0409-0415
 	 * C:\Users\Regretless\OneDrive\共享文档\考虫\每日统计\考虫VIP计算机班打卡和作业提交情况情况0409-0415.xlsx
 	 */
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 		int initial = 2;// Excel表格中初始列
-		int interval = 5;// 选定日期间隔
-		int standard = 5;// 未达标的标准
+		int interval = 7;// 选定日期间隔
+		int standard = 7;// 未达标的标准
 		boolean[] index = { true, true };// false ,false 0.是否统计周总结和周计划；1.是否统计学生作业提交情况
 		boolean CreateOrNot = false;// true
 

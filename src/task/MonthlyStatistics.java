@@ -42,12 +42,17 @@ public class MonthlyStatistics {
 
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Tools nl = new Tools();
 		MonthlyStatistics ms = new MonthlyStatistics();
 
-		ms.copyFiles(nl.readNameListFromExcel(nl.getWorkbook(args[0])), args[1]);
+		try {
+			ms.copyFiles(nl.readNameListFromExcel(nl.getWorkbook(args[0])), args[1]);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

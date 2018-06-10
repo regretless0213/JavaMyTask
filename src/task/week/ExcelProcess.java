@@ -1,4 +1,4 @@
-package task;
+package task.week;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+
+import task.Tools;
 
 public class ExcelProcess {
 	private static int initial;// Excel表格中初始列
@@ -28,6 +30,8 @@ public class ExcelProcess {
 	private ArrayList<String> groupStu;// 用来收录小组成员
 	private ArrayList<String[]> rlStu;// 用来收录请假学生
 	private ArrayList<String[]> stuDaily;// 用来统计每位学生打卡总次数
+
+	private Tools t;
 
 	static Comparator<String> sc = new Comparator<String>() {
 		@Override
@@ -49,7 +53,7 @@ public class ExcelProcess {
 		}
 	};
 
-	public ExcelProcess(int initialNum, int intervalNum, int standardNum) throws Exception {
+	public ExcelProcess(int initialNum, int intervalNum, int standardNum) {
 		initial = initialNum;
 		interval = intervalNum;
 		standard = standardNum;
@@ -66,33 +70,41 @@ public class ExcelProcess {
 		rlStu = new ArrayList<String[]>();
 		stuDaily = new ArrayList<String[]>();
 
+		t = new Tools();
 	}
 
-	private boolean LeaveOrNot(Workbook wb, String n) {
-		Sheet eSheet = wb.getSheetAt(0);
-		for (int rowNum = 1; rowNum <= eSheet.getLastRowNum(); rowNum++) {
-			Row eRow = eSheet.getRow(rowNum);
-			String name = rowNum + eRow.getCell(1).toString();
-			if (n.equals(name)) {
-				if (eRow.getCell(2) != null && eRow.getCell(2).toString().contains("转班")) {
-					return true;
-				}
-			}
-		}
-		// System.out.println(name+"名字输入有误！");
-		return false;
-
-	}
+	// private boolean Leave(Workbook wb, String n)
+	// {//替换成tools.LeaveOrNot###########待完成
+	// Sheet eSheet = wb.getSheetAt(0);
+	// for (int rowNum = 1; rowNum <= eSheet.getLastRowNum(); rowNum++) {
+	// Row eRow = eSheet.getRow(rowNum);
+	// String name = rowNum + eRow.getCell(1).toString();
+	// if (n.equals(name)) {
+	// if (eRow.getCell(2) != null && eRow.getCell(2).toString().contains("转班")) {
+	// return true;
+	// }
+	// }
+	// }
+	// // System.out.println(name+"名字输入有误！");
+	// return false;
+	//
+	// }
 
 	public void TotalCount(Workbook workbook) {
-
 		Sheet eSheet = workbook.getSheetAt(0);// 单词签到页
 		// int num = 0;
 
 		for (int rowNum = 1; rowNum <= eSheet.getLastRowNum(); rowNum++) {
 			Row eRow = eSheet.getRow(rowNum);
+			if (eRow.getCell(1) == null) {
+				break;
+			}
 			String name = rowNum + eRow.getCell(1).toString();// 限定学生姓名格式
-			stuName.put(name, 0);
+			if (!t.LeaveOrNot(name)) {
+				stuName.put(name, 0);
+			} else {
+				leave++;
+			}
 			if (eRow != null) {
 				int num = 0;// 计量未交作业次数
 				for (int cellsNum = initial; cellsNum < (initial + interval); cellsNum++) {
@@ -109,9 +121,8 @@ public class ExcelProcess {
 						num++;
 					} else {
 						num = 0;
-						if (eRow.getCell(cellsNum).toString().contains("转班")) {
-							stuName.remove(name);
-							leave++;
+						if (!stuName.containsKey(name)) {
+							System.out.println(name + "不在班级中。");
 							break;
 						} else if (eRow.getCell(cellsNum).toString().contains("加入班级")) {
 							int[] change = new int[2];
@@ -134,11 +145,14 @@ public class ExcelProcess {
 			}
 		}
 
-		Sheet dSheet = workbook.getSheetAt(1);// 每日签到页########未完成
+		Sheet dSheet = workbook.getSheetAt(1);//
 		for (int rowNum = 1; rowNum <= dSheet.getLastRowNum(); rowNum++) {
 			Row dRow = dSheet.getRow(rowNum);
+			if (dRow.getCell(1) == null) {
+				break;
+			}
 			String name = rowNum + dRow.getCell(1).toString();// 限定学生姓名格式
-			if (!LeaveOrNot(workbook, name)) {
+			if (!t.LeaveOrNot(name)) {
 				String[] daily = new String[2];
 				daily[0] = name;
 				int count = 0;
@@ -168,7 +182,9 @@ public class ExcelProcess {
 					}
 					Row zRow = zSheet.getRow(rowNum);
 					// stuName.add(xssfRow.getCell(1).toString());
-
+					if (zRow.getCell(1) == null) {
+						break;
+					}
 					String name = rowNum + zRow.getCell(1).toString();
 					if (!stuName.containsKey(name)) {
 						break;
@@ -238,18 +254,18 @@ public class ExcelProcess {
 	public void printRatio() {
 		System.out.println("本周英语打卡率如下：");
 		for (int d = 0; d < (Result.size() / 2); d++) {
-			System.out.println("周" + (d + 1) + "，共 人，打卡人数" + Result.get(d));
+			System.out.println("本周第" + (d + 1) + "天，共 人，打卡人数" + Result.get(d));
 		}
 		System.out.println("本周综合打卡率如下：");
 		for (int d = (Result.size() / 2); d < Result.size(); d++) {
-			System.out.println("周" + (d - (Result.size() / 2) + 1) + "，共 人，打卡人数" + Result.get(d));
+			System.out.println("本周第" + (d - (Result.size() / 2) + 1) + "天，共 人，打卡人数" + Result.get(d));
 		}
 		System.out.println("本周人员变动情况：");
 		for (int[] r : stuChange) {
 			if (r[1] > 1) {
-				System.out.println("周" + (r[1] - 1) + "及之前学生总数为" + (r[0] - leave - 1));
+				System.out.println("本周第" + (r[1] - 1) + "天及之前学生总数为" + (r[0] - leave - 1));
 			} else {
-				System.out.println("周" + r[1] + "学生总数为" + (r[0] - leave));
+				System.out.println("本周第" + r[1] + "天学生总数为" + (r[0] - leave));
 			}
 		}
 		System.out.println("目前学生总数量为" + stuName.size());

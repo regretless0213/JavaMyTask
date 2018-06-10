@@ -1,4 +1,4 @@
-package task;
+package task.month;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,17 +15,23 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import task.Tools;
+
 public class ExStuStatistics {
 	private Map<String, int[]> stuCredit;// 统计总分
 	private Map<String, int[]> Details;
 	private static int time = 100;
 
+	private Tools t;
+
 	public ExStuStatistics() {// 初始化构造函数
 		stuCredit = new HashMap<String, int[]>();
 		Details = new HashMap<String, int[]>();
+
+		t = new Tools();
 	}
 
-	public void TotalCount(File fs) throws Exception {
+	public void TotalCount(File fs) {
 		File[] tmplist = fs.listFiles();
 		for (int n = 0; n < tmplist.length; n++) {// 遍历文件夹中每个学生文档
 			if (!tmplist[n].isDirectory()) {
@@ -47,8 +53,7 @@ public class ExStuStatistics {
 				if (eRow != null) {
 					String name = rowNum + eRow.getCell(1).toString();// 限定学生姓名格式
 
-					if (eRow.getCell(2) == null || !eRow.getCell(2).toString().contains("转班")) {
-
+					if (!t.LeaveOrNot(name)) {
 						if (in == 0 && !stuCredit.containsKey(name)) {
 							int[] tmp = { 0, 0, 0 };// 0位代表总分，1位代表出席天数，2位代表是否是小组成员
 							stuCredit.put(name, tmp);
@@ -68,9 +73,8 @@ public class ExStuStatistics {
 							if (in == 0) {
 								cdtmp[0]++;
 							}
-							if (eRow.getCell(cellsNum).toString().contains("转班")) {
-								stuCredit.remove(name);
-								Details.remove(name);
+							if (!stuCredit.containsKey(name)) {
+								System.out.println(name + "不在班级中。");
 								break;
 							} else if (eRow.getCell(cellsNum).toString().contains("-")) {
 								cdtmp[1]--;
@@ -123,10 +127,10 @@ public class ExStuStatistics {
 						int[] cd = new int[3];
 						switch (in) { // 映射公式
 						case 0:
-							cd[0] = stuCredit.get(name)[0] + cdtmp[0] / 6;
+							cd[0] = stuCredit.get(name)[0] + cdtmp[0] * 5 / 12;
 							break; // 单词打卡映射
 						case 1:
-							cd[0] = stuCredit.get(name)[0] + cdtmp[0];
+							cd[0] = stuCredit.get(name)[0] + cdtmp[0] * 10 / 7;
 							break; // 起床打卡
 						case 2:
 							cd[0] = stuCredit.get(name)[0] + cdtmp[0] * 2 / 5;
@@ -157,7 +161,7 @@ public class ExStuStatistics {
 					}
 					if (Details.containsKey(name)) {
 						int[] d = new int[8];
-						for (int i = 0; i < d.length-1; i++) {
+						for (int i = 0; i < d.length - 1; i++) {
 							d[i] = Details.get(name)[i] + dtmp[i];
 						}
 						d[7] = stuCredit.get(name)[1];
@@ -212,13 +216,13 @@ public class ExStuStatistics {
 		for (Map.Entry<String, int[]> me : list) {
 			float ctmp = getFraction(me);
 			// System.out.println(me.getValue()[0] + " " + me.getValue()[1]);
-			int credit = (int) (Math.sqrt(ctmp) / Math.sqrt(max) * 100);
-			
+			int credit = (int) (Math.sqrt(ctmp) / Math.sqrt(max) * 60);// 映射后满分100分
+
 			if (me.getValue()[2] == 0) {
-				System.out.println((list.indexOf(me) + 1) + ". " + me.getKey() + "\t评分：" + credit + "\t" + num);
+				System.out.println((list.indexOf(me) + 1) + ".\t" + me.getKey() + "\t评分：" + credit + "\t" + num);
 				num++;
 			} else {
-				System.out.println((list.indexOf(me) + 1) + ". " + me.getKey() + "\t评分：" + credit + "\t小组");
+				System.out.println((list.indexOf(me) + 1) + ".\t" + me.getKey() + "\t评分：" + credit + "\t小组");
 			}
 		}
 	}
@@ -245,9 +249,9 @@ public class ExStuStatistics {
 					return -1;
 			}
 		});
+		System.out.println("姓名\t单词\t打卡\t数学\t英语\t专业课\t政治\t请假\t出勤");
 		for (Map.Entry<String, int[]> me : list) {
-			System.out.println(me.getKey());
-			System.out.println("单词\t打卡\t数学\t英语\t专业课\t政治\t请假\t出勤");
+			System.out.print(me.getKey() + "\t");
 			for (int i = 0; i < me.getValue().length; i++) {
 				System.out.print(me.getValue()[i] + "\t");
 			}
