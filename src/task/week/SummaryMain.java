@@ -63,7 +63,7 @@ public class SummaryMain {
 					
 //					ep.printGroupMember();
 				}
-				if (CreateOrNot) {
+				if (CreateOrNot) {//创建周文件夹
 					String fp = args[i];
 					String[] tmpath = fp.split("\\\\");
 					int tmpsize = tmpath.length - 1;// 未完成
@@ -79,7 +79,7 @@ public class SummaryMain {
 					t.mkStuDir(path, myWorkbook);
 					// nm.mkdirs(NormalManagement.mainDir + sparator + "周任务", namelist);
 				}
-				if(index[2]) {
+				if(index[2]) {//输出平均分及最低分学员
 					CreditStatistics cs = new CreditStatistics(t.readNameListFromExcel(myWorkbook));
 
 					myWorkbook = t.getWorkbook(creditpath);

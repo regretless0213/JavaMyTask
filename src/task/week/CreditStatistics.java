@@ -25,7 +25,7 @@ public class CreditStatistics {
 		// System.out.println(stuName.size());
 	}
 
-	public int IndexContain(String s) {
+	public int IndexContain(String s) {//返回学生名字所在的索引位置
 		for (int index = 0; index < stuName.size(); index++) {
 			if (stuName.get(index).contains(s)) {
 				return index;
@@ -34,7 +34,7 @@ public class CreditStatistics {
 		return -1;
 	}
 
-	public void Collection(Workbook workbook) {
+	public void Collection(Workbook workbook) {//学生姓名与用户名映射表
 		Sheet uSheet = workbook.getSheetAt(0);// 获取用户名
 		for (int rowNum = 0; rowNum <= uSheet.getLastRowNum(); rowNum++) {
 			Row eRow = uSheet.getRow(rowNum);

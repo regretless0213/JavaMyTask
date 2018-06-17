@@ -7,7 +7,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
@@ -86,7 +89,7 @@ public class Tools {
 		// }
 	}
 
-	private void mkdirs(String parent, ArrayList<String> children) {
+	private void mkdirs(String parent, ArrayList<String> children) {//批量创建文件夹
 		for (String child : children) {
 			mkdir(parent, child);
 		}
@@ -221,7 +224,7 @@ public class Tools {
 		return getStuLeave("C:\\Users\\Regretless\\OneDrive\\共享文档\\考虫\\每日统计\\转班名单.xlsx");
 	}
 
-	public ArrayList<String> getStuLeave(String path) {
+	public ArrayList<String> getStuLeave(String path) {//获取转班学员名单
 		ArrayList<String> stuLeave = new ArrayList<String>();
 		Workbook mywb = getWorkbook(path);
 		Sheet mysh = mywb.getSheetAt(0);
@@ -242,4 +245,24 @@ public class Tools {
 		}
 	}
 
+	public Comparator<String> sc = new Comparator<String>() {
+		@Override
+		public int compare(String o1, String o2) {
+			// TODO Auto-generated method stub
+			Pattern p = Pattern.compile("[\\u4e00-\\u9fa5]+|\\d+");
+			Matcher m1 = p.matcher(o1);
+			Matcher m2 = p.matcher(o2);
+			int n1 = 0;
+			int n2 = 0;
+			if (m1.find() && m2.find()) {
+				n1 = Integer.parseInt(m1.group(0));
+				n2 = Integer.parseInt(m2.group(0));
+			}
+			if (n1 > n2)
+				return 1;
+			else
+				return -1;
+		}
+	};
+	
 }

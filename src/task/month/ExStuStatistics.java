@@ -21,12 +21,14 @@ public class ExStuStatistics {
 	private Map<String, int[]> stuCredit;// 统计总分
 	private Map<String, int[]> Details;
 	private static int time = 100;
+	private int max;//存储最高分
 
 	private Tools t;
 
 	public ExStuStatistics() {// 初始化构造函数
 		stuCredit = new HashMap<String, int[]>();
 		Details = new HashMap<String, int[]>();
+		max = 0;
 
 		t = new Tools();
 	}
@@ -40,6 +42,23 @@ public class ExStuStatistics {
 			} else {
 				System.out.println(tmplist[n].getName());
 			}
+		}
+		for(Map.Entry<String, int[]> me:stuCredit.entrySet()) {//合并总分与出勤天数；找出最大值
+			int[] tmp = new int[2];
+			tmp[0] = getFraction(me);
+			tmp[1] = me.getValue()[2];
+			if(tmp[0] > max) {
+				max = tmp[0];
+			}
+			stuCredit.put(me.getKey(), tmp);
+		}
+		for (Map.Entry<String, int[]> me : stuCredit.entrySet()) {//标准化
+			// System.out.println(me.getValue()[0] + " " + me.getValue()[1]);
+			int credit = (int) (Math.sqrt(me.getValue()[0]) / Math.sqrt(max) * 60);// 映射后满分60分
+			int[] cr = new int[2];
+			cr[0] = credit;
+			cr[1] = me.getValue()[1];
+			stuCredit.put(me.getKey(), cr);
 		}
 	}
 
@@ -73,7 +92,7 @@ public class ExStuStatistics {
 								cdtmp[0]++;
 							}
 							if (!stuCredit.containsKey(name)) {
-								System.out.println(name + "不在班级中。");
+//								System.out.println(name + "不在班级中。");
 								break;
 							} else if (eRow.getCell(cellsNum).toString().contains("-")) {
 								cdtmp[1]--;
@@ -170,67 +189,30 @@ public class ExStuStatistics {
 			}
 		}
 
+
+	}
+	
+	//##############小组成员检测是否单独列为一个公用函数
+	public Map<String, int[]> getStaticResult(){
+		return stuCredit;
 	}
 
-	public void print() {
+	public void print() {//打印评分排行；不区分小组
+		ListSort ls = new ListSort(stuCredit);
 		List<Entry<String, int[]>> list = new ArrayList<Map.Entry<String, int[]>>(stuCredit.entrySet());
-		Collections.sort(list, new Comparator<Map.Entry<String, int[]>>() {
-			@Override
-			public int compare(Entry<String, int[]> arg0, Entry<String, int[]> arg1) {
-				// TODO Auto-generated method stub
-				if (arg0.getValue()[1] == 0) {
-					System.out.println(arg0.getKey());
-				}
-				if (arg1.getValue()[1] == 0) {
-					System.out.println(arg1.getKey());
-				}
-				float o1 = getFraction(arg0);
-				float o2 = getFraction(arg1);
-				if (o1 > o2) {
-					return -1;
-				} else if (o1 == o2) {
-					Pattern p = Pattern.compile("[\\u4e00-\\u9fa5]+|\\d+");
-					Matcher m1 = p.matcher(arg0.getKey());
-					Matcher m2 = p.matcher(arg1.getKey());
-					int n1 = 0;
-					int n2 = 0;
-					if (m1.find() && m2.find()) {
-						n1 = Integer.parseInt(m1.group(0));
-						n2 = Integer.parseInt(m2.group(0));
-					}
-					if (n1 > n2)
-						return 1;
-					else
-						return -1;
-				} else {
-					return 1;
-				}
-			}
-
-		});
-
-		float max = getFraction(list.get(0));
-		// System.out.println(max);
-		int num = 1;
+		Collections.sort(list,ls);
+		
 		for (Map.Entry<String, int[]> me : list) {
-			float ctmp = getFraction(me);
-			// System.out.println(me.getValue()[0] + " " + me.getValue()[1]);
-			int credit = (int) (Math.sqrt(ctmp) / Math.sqrt(max) * 60);// 映射后满分100分
-
-			if (me.getValue()[2] == 0) {
-				System.out.println((list.indexOf(me) + 1) + ".\t" + me.getKey() + "\t评分：" + credit + "\t" + num);
-				num++;
-			} else {
-				System.out.println((list.indexOf(me) + 1) + ".\t" + me.getKey() + "\t评分：" + credit + "\t小组");
-			}
+			System.out.println((list.indexOf(me) + 1) + ".\t" + me.getKey() + "\t评分：" + me.getValue()[0]);
+			
 		}
 	}
 
-	public void printDetails() {
+	public void printDetails() {//打印细节列表
 		List<Entry<String, int[]>> list = new ArrayList<Map.Entry<String, int[]>>(Details.entrySet());
 		Collections.sort(list, new Comparator<Map.Entry<String, int[]>>() {
 			@Override
-			public int compare(Entry<String, int[]> arg0, Entry<String, int[]> arg1) {
+			public int compare(Entry<String, int[]> arg0, Entry<String, int[]> arg1) {//排序算法
 				// TODO Auto-generated method stub
 
 				Pattern p = Pattern.compile("[\\u4e00-\\u9fa5]+|\\d+");
@@ -258,7 +240,10 @@ public class ExStuStatistics {
 		}
 	}
 
-	private float getFraction(Map.Entry<String, int[]> e) {
+	private int getFraction(Map.Entry<String, int[]> e) {//总分除以出勤天数
+		if (e.getValue()[1] == 0) {
+			System.out.println(e.getKey()+"数据出错！出勤天数为0");
+		}
 		return e.getValue()[0] * time / e.getValue()[1];
 
 	}

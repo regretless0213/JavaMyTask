@@ -1,11 +1,8 @@
 package task.week;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -33,27 +30,8 @@ public class ExcelProcess {
 
 	private Tools t;
 
-	static Comparator<String> sc = new Comparator<String>() {
-		@Override
-		public int compare(String o1, String o2) {
-			// TODO Auto-generated method stub
-			Pattern p = Pattern.compile("[\\u4e00-\\u9fa5]+|\\d+");
-			Matcher m1 = p.matcher(o1);
-			Matcher m2 = p.matcher(o2);
-			int n1 = 0;
-			int n2 = 0;
-			if (m1.find() && m2.find()) {
-				n1 = Integer.parseInt(m1.group(0));
-				n2 = Integer.parseInt(m2.group(0));
-			}
-			if (n1 > n2)
-				return 1;
-			else
-				return -1;
-		}
-	};
 
-	public ExcelProcess(int initialNum, int intervalNum, int standardNum) {
+	public ExcelProcess(int initialNum, int intervalNum, int standardNum) {//初始化构造函数
 		initial = initialNum;
 		interval = intervalNum;
 		standard = standardNum;
@@ -145,7 +123,7 @@ public class ExcelProcess {
 			}
 		}
 
-		Sheet dSheet = workbook.getSheetAt(1);//
+		Sheet dSheet = workbook.getSheetAt(1);//打卡页
 		for (int rowNum = 1; rowNum <= dSheet.getLastRowNum(); rowNum++) {
 			Row dRow = dSheet.getRow(rowNum);
 			if (dRow.getCell(1) == null) {
@@ -173,7 +151,7 @@ public class ExcelProcess {
 				if (rowNum == 1) {
 					Result.add(0);
 				}
-				int daycount = 0;
+				int daycount = 0;//确保一天四门科目未提交次数只统计一次
 
 				for (int numSheet = 2; numSheet < workbook.getNumberOfSheets(); numSheet++) {
 					Sheet zSheet = workbook.getSheetAt(numSheet);
@@ -207,7 +185,11 @@ public class ExcelProcess {
 								int minsize = rindex + 1;// 记录星期几
 								String[] rl = new String[2];
 								rl[0] = name;
-								rl[1] = "周" + minsize;
+								int day = minsize + 5;
+								if (day > 7) {
+									day = day - 7;
+								}
+								rl[1] = "周" + day;
 								rlStu.add(rl);
 							}
 							break;
@@ -231,10 +213,10 @@ public class ExcelProcess {
 
 	}
 
-	public void printBadStuList() {
+	public void printBadStuList() {	//未达标学生名单
 		// 排序
-		dcResult.sort(sc);
-		zhResult.sort(sc);
+		dcResult.sort(t.sc);
+		zhResult.sort(t.sc);
 
 		System.out.println("单词签到未达标（连续" + standard + "天以上未签到）名单：");
 		for (String r : dcResult) {
@@ -251,7 +233,7 @@ public class ExcelProcess {
 		System.out.println("共有" + (zhResult.size() - groupStu.size()) + "同学未提交作业\n");
 	}
 
-	public void printRatio() {
+	public void printRatio() {	//打印打卡率
 		System.out.println("本周英语打卡率如下：");
 		for (int d = 0; d < (Result.size() / 2); d++) {
 			System.out.println("本周第" + (d + 1) + "天，共 人，打卡人数" + Result.get(d));
@@ -271,14 +253,14 @@ public class ExcelProcess {
 		System.out.println("目前学生总数量为" + stuName.size());
 	}
 
-	public void printDaily() {
+	public void printDaily() {	//打印打卡次数
 		System.out.println("本周打卡次数统计：");
 		for (String[] ds : stuDaily) {
 			System.out.println(ds[0] + "\t:" + ds[1]);
 		}
 	}
 
-	public void printReqForLeave() {
+	public void printReqForLeave() {	//打印请假名单
 		String name = "";
 		for (String[] rl : rlStu) {
 			if (!rl[0].equals(name)) {
@@ -292,14 +274,14 @@ public class ExcelProcess {
 		System.out.println();
 	}
 
-	public void printGroupMember() {
+	public void printGroupMember() {	//打印请假名单
 		System.out.println(groupStu.size() + "名小组成员：");
 		for (String name : groupStu) {
 			System.out.println(name);
 		}
 	}
 
-	public void setCMON(int b) {
+	public void setCMON(int b) {//设定是否统计小组成员；默认统计
 		cmon = b;
 	}
 }
